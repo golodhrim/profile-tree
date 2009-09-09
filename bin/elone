@@ -1,0 +1,118 @@
+#!/usr/bin/python
+#
+# This file is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# Author:  Jonas Bernoulli <jonas@bernoul.li>
+# Created: 20090909
+# Updated: 20090909
+# Version: 001 (this file)
+#
+# Commentary:
+#   List files not owned by any package.
+
+# TODO check for unnecessary entries in config file
+# TODO convert relative paths to absolute
+
+version="001"
+
+import os.path
+import sys
+from subprocess import Popen, PIPE
+from optparse import OptionParser
+
+from portage import settings
+from portage.util import ConfigProtect
+from gentoolkit.helpers2 import get_installed_cpvs
+from gentoolkit.package import Package
+
+sys.path.insert(0, "/usr/lib/etools")
+
+from etools import get_owner
+
+def get_find_args(cfile, nolinks, cmask, paths=[]):
+	args = paths
+	args = args + ["-type", "d", "-o"]
+	if nolinks:
+		args = args + ["-type", "l", "-o"]
+	if cfile:
+		mode = "prune"
+		with open(cfile, "r") as f:
+			for line in f:
+				line = line.strip()
+				if line == "[mode prune]":
+					mode = "prune"
+				elif line == "[mode name]":
+					mode = "name"
+				elif line == "[mode wholename]":
+					mode = "wholename"
+				elif line == "[mode regex]":
+					mode = "regex"
+				elif not line == "" and not line[0] == "#":
+					line = line.split("#")[0].rstrip()
+					if mode == "prune":
+						args = args + ["-path", line, "-prune", "-o"]
+					elif mode == "name":
+						args = args + ["-name", line, "-o"]
+					elif mode == "wholename":
+						args = args + ["-wholename", line, "-o"]
+					elif mode == "regex":
+						args = args + ["-regex", line, "-o"]
+	for m in cmask:
+		args = args + ["-path", line, "-prune", "-o"]
+	if len(args) > 0:
+		args = args + ["-print"]
+	return args
+
+if __name__ == "__main__":
+	parser = OptionParser(
+		usage="%prog [options] [path]...",
+		version="%prog-"+version,
+		description="List files not owned by any package.",
+		epilog="For more information see elone(1).")
+	parser.add_option(
+		"-e", "--exclude",
+		action="store", metavar="FILE", dest="file",
+		help="exclude files in directories listed in FILE (default: /etc/elone.conf)")
+	parser.add_option(
+		"-n", "--no-exclude",
+		action="store_false", dest="exclude", default=True,
+		help="do not use the default (or any other) exclude file")
+	parser.add_option(
+		"-l", "--no-links",
+		action="store_true", dest="nolinks", default=False,
+		help="do not use the default (or any other) exclude file")
+	parser.add_option(
+		"-p", "--protected",
+		action="store_true", default=False,
+		help="only include config protected files")
+
+	options, paths = parser.parse_args()
+	find_args = []
+	cmask = []
+
+	if options.protected:
+		if len(paths) > 0:
+			parser.error("option -p and argument PATH are mutually exclusive")
+		paths = settings.get("CONFIG_PROTECT", "").split()
+		cmask = settings.get("CONFIG_PROTECT_MASK", "").split()
+
+	if options.exclude:
+		if not options.file:
+			options.file = "/etc/elone.conf"
+	else:
+		if options.file:
+			parser.error("options -e and -n are mutually exclusive")
+
+	find_args = get_find_args(options.file, options.nolinks, cmask, paths)
+	find = Popen(["find"] + find_args, stdout=PIPE)
+	sort = Popen(["sort"], stdin=find.stdout, stdout=PIPE)
+	files, stderrdata = sort.communicate()
+	files = files.splitlines()
+
+	packages = [Package(x) for x in get_installed_cpvs()]
+	for cfile in files:
+		if not get_owner(cfile, packages):
+			print cfile

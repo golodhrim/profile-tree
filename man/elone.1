@@ -1,0 +1,65 @@
+.TH ELONE 1 "September 9, 2009" "Etools User Manual"
+.SH NAME
+.PP
+elone - list files not owned by any package
+.SH SYNOPSIS
+.PP
+elone [\f[I]options\f[]] [\f[I]path\f[]]\&...
+.SH DESCRIPTION
+.PP
+Elone lists files not owned by any package (installed using portage
+or a compatible package manager).
+Since there likely exist many files that are not owned by any
+package \f[I]/etc/eclone.conf\f[] contains patterns for files not
+to be listed by elone.
+.PP
+Think of \f[I]/etc/elone.conf\f[] as a list of files known not to
+belong to any package, it starts out with a list of such files that
+exist on most gentoo installations.
+Use \f[B]--no-exclude\f[] in order not to read this file.
+If you want to read exclude patterns from a different file use
+\f[B]--exclude\f[].
+.PP
+Unless \f[B]PATH\f[] or \f[B]--protected\f[] is provided list all
+files not explicitly excluded.
+By providing \f[B]PATH\f[] (optionally multiple times) the search
+is limited to the given directories.
+Option \f[B]--protected\f[] limits the search to config protected
+files.
+.SH OPTIONS
+.TP
+.B \[em]version
+Show version information and exit.
+.RS
+.RE
+.TP
+.B -h, --help
+Show help message and exit.
+.RS
+.RE
+.TP
+.B -e \f[I]FILE\f[], --exclude \f[I]FILE\f[]
+Exclude files in directories listed in \f[B]FILE\f[] instead of the
+default.
+.RS
+.RE
+.TP
+.B -n, --no-exclude
+Do not use the default (or any other) exclude file.
+.RS
+.RE
+.TP
+.B -p, --protected
+Only include config protected files.
+.RS
+.RE
+.TP
+.B <\f[I]path\f[]>\&...
+Only list files under these directories.
+.RS
+.RE
+.SH SEE ALSO
+.PP
+\f[B]echanged\f[](1).
+.SH AUTHOR
+Jonas Bernoulli <jonas@bernoul.li>

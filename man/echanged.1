@@ -1,0 +1,64 @@
+.TH ECHANGED 1 "September 9, 2009" "Etools User Manual"
+.SH NAME
+.PP
+echanged \[em] list packages which own modified files
+.SH SYNOPSIS
+.PP
+echanged [\f[I]options\f[]] [\f[I]path\f[]]\&...
+.SH DESCRIPTION
+.PP
+Echanged lists packages (installed using portage or a compatible
+package manager) which own modified files.
+This is similar to \f[B]equery\ check\ <pkgspec>\f[] but more
+suitable to get a grand overview of the changes to all packages on
+your system.
+.PP
+Unless \f[B]PATH\f[] or \f[B]--protected\f[] is provided all
+installed packages are checked.
+By providing \f[B]PATH\f[] (optionally multiple times) the search
+is limited to the given directories.
+Option \f[B]--protected\f[] limits the search to packages which own
+config protected files.
+.PP
+Unless the \f[B]--quiet\f[] is provided the modified files are
+listed along with the package.
+Option \f[B]--all\f[] on the other hand causes causes all modified
+files of a package to be listed not only those under the provided
+PATH or which are config protected.
+.SH OPTIONS
+.TP
+.B \[em]version
+Show version information and exit.
+.RS
+.RE
+.TP
+.B -h, --help
+Show help message and exit.
+.RS
+.RE
+.TP
+.B -q, --quiet
+Do not list files along with packages.
+.RS
+.RE
+.TP
+.B -a, --all
+List all modified files even if not in PATH or not config
+protected.
+.RS
+.RE
+.TP
+.B -p, --protected
+Only list packages which own config protected files.
+.RS
+.RE
+.TP
+.B <\f[I]path\f[]>\&...
+Only list files under these directories.
+.RS
+.RE
+.SH SEE ALSO
+.PP
+\f[B]elone\f[](1), \f[B]equery\f[](1).
+.SH AUTHOR
+Jonas Bernoulli <jonas@bernoul.li>
