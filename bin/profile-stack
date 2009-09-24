@@ -1,0 +1,114 @@
+#!/bin/bash
+#
+# This file is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# Author:  Jonas Bernoulli <jonas@bernoul.li>
+# Created: 20090924
+# Updated: 20090924
+# Version: 001 (this file)
+#
+# Commentary:
+#   Show stack of parent profiles of a portage profile.
+
+version="001"
+
+usage() {
+    cat <<EOF
+Usage: profile-stack [-v] [profile]
+
+Show stack of parent profiles of a portage profile.
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -v                    show contained files along with profiles
+  profile               the profile for which to show the parents
+                        (defaults to active profile)
+
+For more information see profile-stack(1).
+EOF
+}
+
+cd $(portageq envvar PORTDIR)/profiles
+
+seen=""
+
+isdub() {
+    for s in $seen
+    do
+        [ "$1" = "$s" ] && return 0
+    done
+    return 1
+}
+
+walk() {
+    if isdub $1
+    then
+        printf "%${2}s<%s>\n" "" "$1"
+    else
+        local content=$(find $1 -maxdepth 1 \
+            -name eapi -or -name parent -or -name ChangeLog -o \
+            -type f -print | sort)
+
+        if [ -n "$content" ]
+        then
+            printf "%${2}s${1}" ""
+        else
+            printf "%${2}s(${1})" ""
+        fi
+
+        if [ "$verbose" = "true" -a -n "$content" ]
+        then
+            printf " {\n"
+            for f in $content
+            do
+                printf "%14s%s\n" "" "$(basename $f)"
+            done
+            printf "%12s}\n" ""
+        else
+            printf "\n"
+        fi
+    fi
+
+    seen="$seen $1"
+    local dir=$1
+    local lnk=$1/parent
+    [ -e $lnk ] &&
+    while read par
+    do
+        par=$(realpath $dir/$par)
+        par=${par#/usr/portage/profiles/}
+        walk $par $(expr ${2:-0} + 2)
+    done < <(tac $lnk)
+}
+
+while (( $# > 0 ))
+do
+    case $1 in
+    -h|--help)
+        usage
+        exit
+        ;;
+    --version)
+        echo "profile-stack-$version"
+        exit
+        ;;
+    -v)
+        verbose="true"
+        ;;
+    -*)
+        echo "profile-stack: error: no such option: $1"
+        exit 1
+        ;;
+    *)
+        profile=$1
+        break
+    esac
+    shift
+done
+
+walk ${1:-$(eselect profile show | head -n 2 | tail -n 1)}
+exit 0 #FIXME

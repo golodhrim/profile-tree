@@ -22,6 +22,12 @@ manager) which own modified files.  This is similar to `equery check <pkgspec>`
 but more suitable to get a grand overview of the changes to all packages on
 your system.
 
+[Profile-stack](https://github.com/tarsius/etools/blob/master/man/profile-stack.1.md) -- show stack of parent profiles of a portage profile
+--------------------------------------------------
+
+profile-stack shows a stack of the parent profiles of the specified
+portage profile and optionally the contained files.
+
 ---
 
 Ebuilds are available [here](https://github.com/tarsius/tarsius-tree/blob/master/app-portage/etools/).
