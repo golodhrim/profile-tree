@@ -8,16 +8,17 @@
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
 # Updated: 20090924
-# Version: 002 (this file)
+# Version: 003 (this file)
 #
 # Commentary:
 #   List packages which own modified files.
 
-version="002"
+version="003"
 
 import sys
 import re
 from subprocess import Popen, PIPE
+from optparse import OptionParser
 
 from portage import settings
 from gentoolkit.helpers2 import get_installed_cpvs
