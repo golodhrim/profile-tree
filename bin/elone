@@ -8,7 +8,7 @@
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
 # Updated: 20090924
-# Version: 001 (this file)
+# Version: 002 (this file)
 #
 # Commentary:
 #   List files not owned by any package.
@@ -16,7 +16,7 @@
 # TODO check for unnecessary entries in config file
 # TODO convert relative paths to absolute
 
-version="001"
+version="002"
 
 import os.path
 import sys
@@ -27,8 +27,6 @@ from portage import settings
 from portage.util import ConfigProtect
 from gentoolkit.helpers2 import get_installed_cpvs
 from gentoolkit.package import Package
-
-sys.path.insert(0, "/usr/lib/etools")
 
 from etools import get_owner
 

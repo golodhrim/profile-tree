@@ -8,12 +8,12 @@
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
 # Updated: 20090924
-# Version: 001 (this file)
+# Version: 002 (this file)
 #
 # Commentary:
 #   List packages which own modified files.
 
-version="001"
+version="002"
 
 import sys
 import re
@@ -23,8 +23,6 @@ from portage import settings
 from gentoolkit.helpers2 import get_installed_cpvs
 from gentoolkit.package import Package
 from gentoolkit.equery.check import run_checks
-
-sys.path.insert(0, "/usr/lib/etools")
 
 from etools import get_owner
 
