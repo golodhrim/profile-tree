@@ -7,13 +7,13 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090924
-# Updated: 20090924
-# Version: 001 (this file)
+# Updated: 20091003
+# Version: 002 (this file)
 #
 # Commentary:
 #   Show stack of parent profiles of a portage profile.
 
-version="001"
+version="002"
 
 usage() {
     cat <<EOF
@@ -79,6 +79,7 @@ walk() {
     [ -e $lnk ] &&
     while read par
     do
+        [[ "${par:0:1}" = "#" || -z "$par" ]] && continue
         par=$(realpath $dir/$par)
         par=${par#/usr/portage/profiles/}
         walk $par $(expr ${2:-0} + 2)
