@@ -8,12 +8,12 @@
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
 # Updated: 20091005
-# Version: 003 (this file)
+# Version: 004 (this file)
 #
 # Commentary:
 #   List packages which own modified files.
 
-version="003"
+version="004"
 
 import sys
 import re
@@ -62,7 +62,7 @@ if __name__ == "__main__":
             prune = prune + ["-path", m, "-prune", "-o"]
 
     if paths:
-        find = Popen(["find"]+prune+paths, stdout=PIPE)
+        find = Popen(["find"]+paths+prune+["-print"], stdout=PIPE)
         sort = Popen(["sort"], stdin=find.stdout, stdout=PIPE)
         files, stderrdata = sort.communicate()
         files = files.splitlines()
