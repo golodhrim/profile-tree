@@ -8,12 +8,12 @@
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
 # Updated: 20091005
-# Version: 004 (this file)
+# Version: 005 (this file)
 #
 # Commentary:
 #   List packages which own modified files.
 
-version="004"
+version="005"
 
 import sys
 import re
@@ -78,6 +78,7 @@ if __name__ == "__main__":
                     
     else:
         own_packages = all_packages
+    own_packages.sort()
 
     for pkg in own_packages:
         pkg_files = pkg.get_contents()
