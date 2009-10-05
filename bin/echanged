@@ -7,7 +7,7 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
-# Updated: 20090924
+# Updated: 20091005
 # Version: 003 (this file)
 #
 # Commentary:
@@ -49,8 +49,8 @@ if __name__ == "__main__":
     options, paths = parser.parse_args()
     all_packages = [Package(x) for x in get_installed_cpvs()]
     prune = []
-    regex_path = None
-    regex_mask = None
+    paths_regex = None
+    pmask_regex = None
 
     if options.protected:
         if len(paths) > 0:
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         paths = settings.get("CONFIG_PROTECT", "").split()
         pmask = settings.get("CONFIG_PROTECT_MASK", "").split()
         pmask_regex = re.compile("(" + "|".join(pmask) + ")")
-        for m in cmask:
+        for m in pmask:
             prune = prune + ["-path", m, "-prune", "-o"]
 
     if paths:
@@ -88,7 +88,7 @@ if __name__ == "__main__":
                     changed.append(cfile)
         if changed:
             print pkg.get_cpv()
-            if verbose:
+            if options.verbose:
                 for err in changed:
                     print "    "+err
                 print ""
