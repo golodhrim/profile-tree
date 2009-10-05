@@ -39,8 +39,8 @@ if __name__ == "__main__":
         help="do not list files along with packages")
     parser.add_option(
         "-a", "--all",
-        action="store_true", default=False,
-        help="list all modified files even if not in PATH or not config-protected")
+        action="store_true", dest="show_all", default=False,
+        help="list all modified files even if not in <path> or not config protected")
     parser.add_option(
         "-p", "--protected",
         action="store_true", default=False,
@@ -80,15 +80,18 @@ if __name__ == "__main__":
         own_packages = all_packages
 
     for pkg in own_packages:
-        passed, checked, errs = run_checks(pkg.get_contents())
+        pkg_files = pkg.get_contents()
+        passed, checked, errs = run_checks(pkg_files)
         changed = []
-        for cfile in errs:
-            if not paths_regex or paths_regex.match(cfile):
-                if not pmask_regex or not pmask_regex.match(cfile):
-                    changed.append(cfile)
+        for err in errs:
+            if options.show_all or \
+                    ((not paths_regex or paths_regex.match(err)) and \
+                     (not pmask_regex or not pmask_regex.match(err))):
+                changed.append(err.split(" ", 1))
         if changed:
+            changed.sort()
             print pkg.get_cpv()
             if options.verbose:
                 for err in changed:
-                    print "    "+err
-                print ""
+                    print "    %-40s %s" % tuple(err)
+                print

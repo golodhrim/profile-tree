@@ -39,7 +39,7 @@ which are config protected.
 :   Do not list files along with packages.
 
 -a, \--all
-:   List all modified files even if not in PATH or not config protected.
+:   List all modified files even if not in <path> or not config protected.
 
 -p, \--protected
 :   Only list packages which own config protected files.
