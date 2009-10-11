@@ -1,51 +1,59 @@
-.TH PROFILE-STACK 1 "September 24, 2009" "Etools User Manual"
-.SH NAME
+'\" t
+.\"     Title: profile-stack
+.\"    Author: [FIXME: author] [see http://docbook.sf.net/el/author]
+.\" Generator: DocBook XSL Stylesheets v1.75.2 <http://docbook.sf.net/>
+.\"      Date: 10/11/2009
+.\"    Manual: Etools Manual
+.\"    Source: Etools 0.1
+.\"  Language: English
+.\"
+.TH "PROFILE\-STACK" "1" "10/11/2009" "Etools 0\&.1" "Etools Manual"
+.\" -----------------------------------------------------------------
+.\" * set default formatting
+.\" -----------------------------------------------------------------
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.\" -----------------------------------------------------------------
+.\" * MAIN CONTENT STARTS HERE *
+.\" -----------------------------------------------------------------
+.SH "NAME"
+profile-stack \- show stack of parent profiles of a portage profile
+.SH "SYNOPSIS"
+.sp
+.nf
+\fIprofile\-stack\fR [\-h] [\-v] [PROFILE]
+.fi
+.sp
+.SH "DESCRIPTION"
+.sp
+profile\-stack shows a stack of the parent profiles of the specified portage profile\&. PROFILE has to relative to /usr/portage/profiles and defaults to the active profile if omitted\&.
+.sp
+The stack starts with the requested profile and ends with the profile which is loaded first\&. Profiles in parentheses do not contain any configuration themselfs, they only contain a parent file\&. They may contain eapi or ChangeLog\&. Profiles in angle brackets will be loaded again later\&.
+.sp
+When \-v is specified files in the profiles are also listed; excluding parent, eapi and ChangeLog\&.
+.SH "OPTIONS"
 .PP
-profile-stack - show stack of parent profiles of a portage profile
-.SH SYNOPSIS
-.PP
-profile-stack [-h] [-v] [\f[I]profile\f[]]
-.SH DESCRIPTION
-.PP
-profile-stack shows a stack of the parent profiles of the specified
-portage profile.
-PROFILE has to relative to \f[I]/usr/portage/profiles\f[] and
-defaults to the active profile if omitted.
-.PP
-The stack starts with the requested profile and ends with the
-profile which is loaded first.
-Profiles in parentheses do not contain any configuration themselfs,
-they only contain a \f[I]parent\f[] file.
-They may contain \f[I]eapi\f[] or \f[I]ChangeLog\f[].
-Profiles in angle brackets will be loaded again later.
-.PP
-When \f[B]-v\f[] is specified files in the profiles are also
-listed; excluding \f[I]parent\f[], \f[I]eapi\f[] and
-\f[I]ChangeLog\f[].
-.SH OPTIONS
-.TP
-.B \[em]version
-Show version information and exit.
-.RS
+\-\-version
+.RS 4
+Show version information and exit\&.
 .RE
-.TP
-.B -h, --help
-Show help message and exit.
-.RS
-.RE
-.TP
-.B -v
-Show contained files along with profiles.
-.RS
-.RE
-.TP
-.B <\f[I]profile\f[]>\&...
-The profile for which to show the parents (defaults to active
-profile).
-.RS
-.RE
-.SH SEE ALSO
 .PP
-\f[B]profile.eselect\f[](5).
-.SH AUTHOR
-Jonas Bernoulli <jonas@bernoul.li>
+\-h, \-\-help
+.RS 4
+Show help message and exit\&.
+.RE
+.PP
+\-v
+.RS 4
+Show contained files along with profiles\&.
+.RE
+.PP
+<profile>\&...
+.RS 4
+The profile for which to show the parents (defaults to active profile)\&.
+.RE
+.SH "SEE ALSO"
+.sp
+profile\&.eselect(5)
