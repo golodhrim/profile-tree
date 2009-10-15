@@ -7,13 +7,13 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090924
-# Updated: 20091003
-# Version: 002 (this file)
+# Updated: 20091015
+# Version: 003 (this file)
 #
 # Commentary:
 #   Show stack of parent profiles of a portage profile.
 
-version="002"
+version="003"
 
 usage() {
     cat <<EOF
@@ -25,14 +25,14 @@ Options:
   --version             show program's version number and exit
   -h, --help            show this help message and exit
   -v                    show contained files along with profiles
-  profile               the profile for which to show the parents
-                        (defaults to active profile)
+  profile               the profile to be shown (defaults to the
+                        active profile).  Can be an absolute or
+                        relative path.  Or a path relative to
+                        PORTDIR/profiles.
 
 For more information see profile-stack(1).
 EOF
 }
-
-cd $(portageq envvar PORTDIR)/profiles
 
 seen=""
 
@@ -45,9 +45,11 @@ isdub() {
 }
 
 walk() {
+    profile=${1#$(portageq envvar PORTDIR)/profiles/}
+
     if isdub $1
     then
-        printf "%${2}s<%s>\n" "" "$1"
+        printf "%${2}s<%s>\n" "" "$profile"
     else
         local content=$(find $1 -maxdepth 1 \
             -name eapi -or -name parent -or -name ChangeLog -o \
@@ -55,9 +57,9 @@ walk() {
 
         if [ -n "$content" ]
         then
-            printf "%${2}s${1}" ""
+            printf "%${2}s${profile}" ""
         else
-            printf "%${2}s(${1})" ""
+            printf "%${2}s(${profile})" ""
         fi
 
         if [ "$verbose" = "true" -a -n "$content" ]
@@ -80,8 +82,7 @@ walk() {
     while read par
     do
         [[ "${par:0:1}" = "#" || -z "$par" ]] && continue
-        par=$(realpath $dir/$par)
-        par=${par#/usr/portage/profiles/}
+        par=$(readlink -f $dir/$par)
         walk $par $(expr ${2:-0} + 2)
     done < <(tac $lnk)
 }
@@ -111,5 +112,22 @@ do
     shift
 done
 
-walk ${1:-$(eselect profile show | head -n 2 | tail -n 1)}
+
+fullpath() {
+    par=$(readlink -f $1)
+    echo "par: $par"
+    par=${par#/usr/portage/profiles/}
+    echo "par: $par"
+}
+
+if [ -z "$1" ]
+then
+    walk $(eselect profile show | head -n 2 | tail -n 1)
+elif [ -e "$1" ]
+then
+    walk $1
+else
+    walk $(portageq envvar PORTDIR)/profiles/$1
+fi
+
 exit 0 #FIXME

@@ -14,8 +14,9 @@ DESCRIPTION
 -----------
 
 profile-stack shows a stack of the parent profiles of the specified
-portage profile.  PROFILE has to relative to `/usr/portage/profiles` and
-defaults to the active profile if omitted.
+portage profile.  PROFILE defaults to the active profile if omitted.
+Otherwise it has to be an absolute or relative path; or a path relative
+to `PORTDIR/profiles`.
 
 The stack starts with the requested profile and ends with the profile
 which is loaded first.  Profiles in parentheses do not contain any

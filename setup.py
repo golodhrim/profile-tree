@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='etools',
-      version='9999',
+      version='0.1',
       description='Misc portage utilities',
       author='Jonas Bernoulli',
       author_email='jonas@bernoul.li',
