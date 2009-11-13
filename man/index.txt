@@ -1,0 +1,51 @@
+Etools -- miscellaneous portage utilities
+=========================================
+
+Etools consists of some small miscellaneous portage utilities.  Currently
+these tools are most suitable to get a grand overview of changes you have
+made to your system, which might be specially handy when you want to copy
+over your configurations to another machine or when you make a fresh
+install.
+
+Please not that I have quickly written these scripts to scratch an itch.
+They seam to work fine and I have taken the extra effort to document them,
+but use at your own risk.
+
+Ebuilds are available at http://github.com/tarsius/overlay-confsink/tree/master/app-portage/etools/.
+
+Elone lists files not owned by any package
+------------------------------------------
+
+linketl:elone[1] lists files not owned by any package (installed using
+portage or a compatible package manager).  Since there likely exist many
+files that are not owned by any package */etc/eclone.conf* contains
+patterns for files known to be listed by elone.
+
+Echanged lists packages which own modified files
+------------------------------------------------
+
+linketl:echanged[1] lists packages (installed using portage or a
+compatible package manager) which own modified files.  This is similar to
+`equery check <pkgspec>` but more suitable to get a grand overview of the
+changes to all packages on your system.
+
+Profile-stack show stack of parent profiles of a portage profile
+----------------------------------------------------------------
+
+linketl:profile-stack[1] shows a stack of the parent profiles of the
+specified portage profile and optionally the contained files.
+
+Redigest update unmerged manifests in the portage tree
+------------------------------------------------------
+
+Redigest updates unmerged manifests and try to continue rebasing (which
+doesn't have an effect when merging and fails if there are other
+conflicts). An exit status of 1 means you are not done yet with this
+commit.
+
+Contact
+-------
+
+Thanks and Best Regards,
+ 
+Jonas Bernoulli <jonas@bernoul.li>

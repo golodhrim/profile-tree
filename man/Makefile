@@ -17,7 +17,7 @@ MANPAGE_XSL = manpage-normal.xsl
 
 XMLTO_EXTRA =
 
-MAN1_TXT = $(wildcard *.txt)
+MAN1_TXT = $(filter-out $(addsuffix .txt, $(ARTICLES)), $(wildcard *.txt))
 
 MAN_TXT = $(MAN1_TXT)
 MAN_XML = $(patsubst %.txt,%.xml,$(MAN_TXT))
