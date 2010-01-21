@@ -7,13 +7,13 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090924
-# Updated: 20091015
-# Version: 003 (this file)
+# Updated: 20100121
+# Version: 004 (this file)
 #
 # Commentary:
 #   Show stack of parent profiles of a portage profile.
 
-version="003"
+version="004"
 
 usage() {
     cat <<EOF
@@ -82,7 +82,7 @@ walk() {
     while read par
     do
         [[ "${par:0:1}" = "#" || -z "$par" ]] && continue
-        par=$(readlink -f $dir/$par)
+        [[ "${par:0:1}" = "/" ]] || par=$(readlink -f $dir/$par)
         walk $par $(expr ${2:-0} + 2)
     done < <(tac $lnk)
 }
@@ -112,22 +112,17 @@ do
     shift
 done
 
-
-fullpath() {
-    par=$(readlink -f $1)
-    echo "par: $par"
-    par=${par#/usr/portage/profiles/}
-    echo "par: $par"
-}
+profile_base=$(portageq envvar PORTDIR)/profiles
+profile=$(eselect profile show | head -n 2 | tail -n 1 | tr -d " ")
 
 if [ -z "$1" ]
 then
-    walk $(eselect profile show | head -n 2 | tail -n 1)
+    walk $profile_base/$profile
 elif [ -e "$1" ]
 then
-    walk $1
+    walk $(readlink -f $1)
 else
-    walk $(portageq envvar PORTDIR)/profiles/$1
+    walk $profile_base/$1
 fi
 
 exit 0 #FIXME
