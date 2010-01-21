@@ -8,23 +8,24 @@
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090924
 # Updated: 20100121
-# Version: 004 (this file)
+# Version: 005 (this file)
 #
 # Commentary:
 #   Show stack of parent profiles of a portage profile.
 
-version="004"
+version="005"
 
 usage() {
     cat <<EOF
-Usage: profile-stack [-v] [profile]
+Usage: profile-stack [-c[=REGEXP]] [profile]
 
 Show stack of parent profiles of a portage profile.
 
 Options:
   --version             show program's version number and exit
   -h, --help            show this help message and exit
-  -v                    show contained files along with profiles
+  -c=[regexp]           show content of profiles. If pattern is
+                        set only show matching files.
   profile               the profile to be shown (defaults to the
                         active profile).  Can be an absolute or
                         relative path.  Or a path relative to
@@ -34,9 +35,11 @@ For more information see profile-stack(1).
 EOF
 }
 
+regexp="(eapi|make.defaults|packages|packages.build|package.keywords|package.mask|package.provided|package.unmask|package.use|package.use.force|package.use.mask|profile.bashrc|use.force|use.mask|virtuals)"
+
 seen=""
 
-isdub() {
+is_dublicate() {
     for s in $seen
     do
         [ "$1" = "$s" ] && return 0
@@ -45,33 +48,28 @@ isdub() {
 }
 
 walk() {
-    profile=${1#$(portageq envvar PORTDIR)/profiles/}
+    profile=${1#$profile_base/}
 
-    if isdub $1
+    [ -e "$1/deprecated" ] && local dpr="DEPRECATED: "
+
+    if is_dublicate $1
     then
-        printf "%${2}s<%s>\n" "" "$profile"
+        printf "%${2}s%sDUBLICATE: %s\n" "" "$dpr" "$profile"
     else
-        local content=$(find $1 -maxdepth 1 \
-            -name eapi -or -name parent -or -name ChangeLog -o \
-            -type f -print | sort)
+        local content=$(find $1 -maxdepth 2 -type f | grep -E "$1/$regexp" | sort)
 
-        if [ -n "$content" ]
+        if [ -n "$verbose" ]
         then
-            printf "%${2}s${profile}" ""
-        else
-            printf "%${2}s(${profile})" ""
-        fi
-
-        if [ "$verbose" = "true" -a -n "$content" ]
-        then
-            printf " {\n"
-            for f in $content
+            printf "%${2}s%s%s\n" "$dpr" "$profile"
+            for c in $content
             do
-                printf "%14s%s\n" "" "$(basename $f)"
+                printf "%$(expr ${2:-0} + 4)s| %s\n" "" "${c#$1/}"
             done
-            printf "%12s}\n" ""
+        elif [ -n "$content" ]
+        then
+            printf "%${2}s%s%s\n" "" "$dpr" "$profile"
         else
-            printf "\n"
+            printf "%${2}s%s(%s)\n" "" "$dpr" "$profile"
         fi
     fi
 
@@ -98,7 +96,11 @@ do
         echo "profile-stack-$version"
         exit
         ;;
-    -v)
+    -c=*)
+        verbose="true"
+        regexp=${1#-v=}
+        ;;
+    -c)
         verbose="true"
         ;;
     -*)
