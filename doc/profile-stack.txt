@@ -8,7 +8,7 @@ profile-stack - show stack of parent profiles of a portage profile
 SYNOPSIS
 --------
 [verse]
-'profile-stack' [-h] [-v] [PROFILE]
+'profile-stack' [-c[=REGEXP]] [PROFILE]
 
 DESCRIPTION
 -----------
@@ -20,12 +20,17 @@ to `PORTDIR/profiles`.
 
 The stack starts with the requested profile and ends with the profile
 which is loaded first.  Profiles in parentheses do not contain any
-configuration themselfs, they only contain a `parent` file.  They may
-contain `eapi` or `ChangeLog`.  Profiles in angle brackets will be loaded
-again later.
+configuration themselfs.  This means they contain none of the files
+listed under `/etc/make.profile/` in portage(5) except maybe `parent`
+and `deprecated` which are not considered here.
 
-When `-v` is specified files in the profiles are also listed; excluding
-`parent`, `eapi` and `ChangeLog`.
+Profiles that contain the `deprecated` file and profiles loaded more
+than once are shown with a prefix indicating the problem.
+
+When `-c` is specified the content of the profiles is also listed; again
+excluding `parent` and `deprecated` and all unknown files.  If `REGEXP`
+is provided only matching files are shown.  Don't start `REGEXP` with `^`.
+All profiles are shown without parentheses in this case.
 
 OPTIONS
 -------
@@ -37,8 +42,9 @@ OPTIONS
 --help::
         Show help message and exit.
 
--v::
-        Show contained files along with profiles.
+-c[=REGEXP]::
+        Show content of profiles.  If `REGEXP` is set only who matching
+        files.
 
 <profile>...::
         The profile for which to show the parents (defaults to active
