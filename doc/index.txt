@@ -14,13 +14,6 @@ but use them at your own risk.
 Ebuilds are available at
 http://github.com/tarsius/overlay-confsink/tree/master/app-portage/etools/.
 
-Elone
------
-
-linketl:elone[1] lists files not owned by any package.  Since there likely
-exist many files that are not owned by any package */etc/eclone.conf*
-contains patterns for files known to be listed by elone.
-
 Echanged
 --------
 
@@ -28,19 +21,24 @@ linketl:echanged[1] lists packages which own modified files.  This is
 similar to `equery check <pkgspec>` but more suitable to get a grand
 overview of the changes to all packages on your system.
 
+Elone
+-----
+
+linketl:elone[1] lists files not owned by any package.  Since there likely
+exist many files that are not owned by any package */etc/eclone.conf*
+contains patterns for files known to be listed by elone.
+
+Env-reload
+----------
+
+linketl:env-reload[1] updates and reloads environment settings
+automatically.
+
 Profile-stack
 -------------
 
 linketl:profile-stack[1] shows a stack of the parent profiles of the
 specified portage profile and optionally the contained files.
-
-Redigest
---------
-
-Redigest updates unmerged manifests and tries to continue rebasing (which
-doesn't have an effect when merging and fails if there are other
-conflicts). An exit status of 1 means you are not done yet with this
-commit.
 
 Contact
 -------
