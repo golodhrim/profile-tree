@@ -1,0 +1,47 @@
+env-reload(1)
+=============
+
+NAME
+----
+env-reload - update and reload environment settings automatically
+
+SYNOPSIS
+--------
+[verse]
+'[.|source] env-reload' [OPTIONS]
+
+DESCRIPTION
+-----------
+
+Env-reload updates and reloads environment settings automatically.
+
+If you source or call this script as root the environment settings are
+first updated using `env-update`, as a regular user this step is skipped.
+
+Then `/etc/profile` and if it exists `~/.bash_profile` are sourced, this
+step is skipped if you do not *source* `env-reload`.
+
+WHY
+---
+
+It has always slightly annoyed me that I had to type two commands to
+bring my environment up-to-date.  But when I changed the way `bash` init
+scripts source each other to be more like what the `bash` documentation
+recommends this increased to three commands and that I wouldn't take
+anymore. :)
+
+OPTIONS
+-------
+
+--version::
+        Show version information and exit.
+
+-h::
+--help::
+        Show help message and exit.
+
+SEE ALSO
+--------
+
+env-update(1)
+bash(1)

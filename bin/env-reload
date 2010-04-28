@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# Copyright (C) 2010  Jonas Bernoulli <jonas@bernoul.li>
+#
+# This file is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# Created: 20100428
+# Updated: 20100428
+# Version: 001 (this file)
+
+version="001"
+
+usage() {
+    cat <<EOF
+Usage: [.|source] env-reload
+
+Update and reload environment settings automatically
+
+Options:
+  --version             show version number and exit
+  -h, --help            show this help message and exit
+EOF
+}
+
+case $1 in
+-h|--help) usage && exit ;;
+--version) echo "env-reload-$version" && exit ;;
+esac
+
+[ "$EUID" == 0 ] && env-update
+
+if [ ! "$(basename $0)" == "env-reload" ]
+then
+    echo ">>> Reloading environment settings..."
+
+    source /etc/profile
+
+    if [ -e "$HOME/.bash_profile" ]
+    then
+        source $HOME/.bash_profile
+    else
+        exit
+    fi
+else
+    echo "!!! Source this script to reload the environment"
+    [ "$EUID" == 0 ]
+fi
