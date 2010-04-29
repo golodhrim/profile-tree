@@ -8,7 +8,7 @@
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
 # Updated: 20100429
-# Version: 003 (this file)
+# Version: 004 (this file)
 #
 # Commentary:
 #   List files not owned by any package.
@@ -16,7 +16,7 @@
 # TODO check for unnecessary entries in config file
 # TODO convert relative paths to absolute
 
-version="003"
+version="004"
 
 import os.path
 import sys
@@ -25,10 +25,8 @@ from optparse import OptionParser
 
 from portage import settings
 from portage.util import ConfigProtect
-from gentoolkit.helpers2 import get_installed_cpvs
+from gentoolkit.helpers import FileOwner
 from gentoolkit.package import Package
-
-from etools import get_owner
 
 def get_find_args(cfile, nolinks, cmask, paths=[]):
     args = paths
@@ -110,7 +108,8 @@ if __name__ == "__main__":
     files, stderrdata = sort.communicate()
     files = files.splitlines()
 
-    packages = [Package(x) for x in get_installed_cpvs()]
+    findowner = FileOwner(early_out=True)
     for cfile in files:
-        if not get_owner(cfile, packages):
+		# TODO exclude files in vc control directories?
+        if not findowner((cfile,)):
             print cfile

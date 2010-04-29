@@ -7,13 +7,13 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
-# Updated: 20091005
-# Version: 005 (this file)
+# Updated: 20100429
+# Version: 006 (this file)
 #
 # Commentary:
 #   List packages which own modified files.
 
-version="005"
+version="006"
 
 import sys
 import re
@@ -21,11 +21,9 @@ from subprocess import Popen, PIPE
 from optparse import OptionParser
 
 from portage import settings
-from gentoolkit.helpers2 import get_installed_cpvs
+from gentoolkit.helpers import FileOwner, get_installed_cpvs
 from gentoolkit.package import Package
-from gentoolkit.equery.check import run_checks
-
-from etools import get_owner
+from gentoolkit.equery.check import VerifyContents
 
 if __name__ == "__main__":
     parser = OptionParser(
@@ -69,20 +67,20 @@ if __name__ == "__main__":
         paths_regex = re.compile("(" + "|".join(paths) + ")")
         own_packages = []
 
+        findowner = FileOwner(early_out=True)
         for cfile in files:
-            pkg = get_owner(cfile, all_packages)
-            if len(pkg) > 0:
-                pkg = Package(pkg[0])
-                if not pkg in own_packages:
-                    own_packages.append(pkg)
+            pkgs = findowner((cfile,))
+            if pkgs:
+                if not pkgs[0][0] in own_packages:
+                    own_packages.append(pkgs[0][0])
                     
     else:
         own_packages = all_packages
     own_packages.sort()
 
     for pkg in own_packages:
-        pkg_files = pkg.get_contents()
-        passed, checked, errs = run_checks(pkg_files)
+        pkg_files = pkg.parsed_contents()
+        passed, checked, errs = VerifyContents()._run_checks(pkg_files)
         changed = []
         for err in errs:
             if options.show_all or \
@@ -91,7 +89,7 @@ if __name__ == "__main__":
                 changed.append(err.split(" ", 1))
         if changed:
             changed.sort()
-            print pkg.get_cpv()
+            print pkg.cpv
             if options.verbose:
                 for err in changed:
                     print "    %-40s %s" % tuple(err)
