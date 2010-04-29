@@ -40,6 +40,11 @@ Profile-stack
 linketl:profile-stack[1] shows a stack of the parent profiles of the
 specified portage profile and optionally the contained files.
 
+Where
+-----
+linketl:where[1] writes the package COMMAND belongs to to standard ouput
+with the help of which(1) and equery(1).
+
 Contact
 -------
 
