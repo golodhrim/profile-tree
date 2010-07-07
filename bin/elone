@@ -19,6 +19,7 @@ version="005_pre"
 
 import os.path
 import sys
+import re
 from subprocess import Popen, PIPE
 from optparse import OptionParser
 
@@ -32,28 +33,19 @@ def get_find_args(cfile, nolinks, cmask, paths=[]):
     if nolinks:
         args += ["-type", "l", "-o"]
     if cfile:
-        mode = "prune"
+        mode = None
         with open(cfile, "r") as f:
             for line in f:
-                line = line.strip()
-                if line == "[mode prune]":
-                    mode = "prune"
-                elif line == "[mode name]":
-                    mode = "name"
-                elif line == "[mode wholename]":
-                    mode = "wholename"
-                elif line == "[mode regex]":
-                    mode = "regex"
-                elif not line == "" and not line[0] == "#":
-                    line = line.split("#")[0].rstrip()
-                    if mode == "prune":
-                        args += ["-path", line, "-prune", "-o"]
-                    elif mode == "name":
-                        args += ["-name", line, "-o"]
-                    elif mode == "wholename":
-                        args += ["-wholename", line, "-o"]
-                    elif mode == "regex":
-                        args += ["-regex", line, "-o"]
+                line = line.split("#")[0].strip()
+                if line == "":
+                    continue
+                set_mode = re.match(r"\[mode (.+)\]", line)
+                if set_mode:
+                    mode = set_mode.group(1)
+                elif mode == "prune":
+                    args += ["-path", line, "-prune", "-o"]
+                else:
+                    args += ["-" + mode, line, "-o"]
     for m in cmask:
         args += ["-path", line, "-prune", "-o"]
     args += ["-type", "d", "-o", "-print"]
