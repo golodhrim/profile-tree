@@ -12,9 +12,7 @@
 # Commentary:
 #   List files not owned by any package.
 
-# TODO check for unnecessary entries in config file
-
-version="005_pre"
+version="005"
 
 import os.path
 import sys
@@ -62,6 +60,20 @@ def list_unknown_files(cfile, nolinks, cmask, paths):
         if not findowner((cfile,)):
             print cfile
 
+def list_removed_files(cfile):
+    mode = None
+    with open(cfile, "r") as f:
+        for line in f:
+            line = line.split("#")[0].strip()
+            if line == "":
+                continue
+            set_mode = re.match(r"\[mode (.+)\]", line)
+            if set_mode:
+                mode = set_mode.group(1)
+            elif mode in ["prune", "wholename"]:
+                if not os.path.lexists(line):
+                    print line
+
 if __name__ == "__main__":
     parser = OptionParser(
         usage="%prog [options] [path]...",
@@ -84,6 +96,10 @@ if __name__ == "__main__":
         "-p", "--protected",
         action="store_true", default=False,
         help="only include config protected files")
+    parser.add_option(
+        "-r", "--reverse",
+        action="store_true", default=False,
+        help="")
 
     options, paths = parser.parse_args()
     cmask = []
@@ -101,8 +117,18 @@ if __name__ == "__main__":
     if options.noexclude:
         if options.file:
             parser.error("options -e and -n are mutually exclusive")
+        if options.reverse:
+            parser.error("options -r and -n are mutually exclusive")
     else:
         if not options.file:
             options.file = "/etc/elone.conf"
 
-    list_unknown_files(options.file, options.nolinks, cmask, paths)
+    if options.reverse:
+        if options.nolinks:
+            parser.error("options -l and -r are mutually exclusive")
+        if options.protected:
+            parser.error("options -p and -r are mutually exclusive")
+
+        list_removed_files(options.file)
+    else:
+        list_unknown_files(options.file, options.nolinks, cmask, paths)
