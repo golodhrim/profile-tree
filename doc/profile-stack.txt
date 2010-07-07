@@ -43,8 +43,8 @@ OPTIONS
         Show help message and exit.
 
 -c[=REGEXP]::
-        Show content of profiles.  If `REGEXP` is set only who matching
-        files.
+        Show content of profiles.  If `REGEXP` is set only show files
+        whose path relative the current profile match.
 
 <profile>...::
         The profile for which to show the parents (defaults to active
