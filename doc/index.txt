@@ -34,11 +34,11 @@ Env-reload
 linketl:env-reload[1] updates and reloads environment settings
 automatically.
 
-Profile-stack
--------------
+Profile-tree
+------------
 
-linketl:profile-stack[1] shows a stack of the parent profiles of the
-specified portage profile and optionally the contained files.
+linketl:profile-tree[1] lists the paths to portage profiles and optionally
+their contents in a tree-like format.
 
 Where
 -----
