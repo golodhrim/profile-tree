@@ -29,9 +29,9 @@ from gentoolkit.package import Package
 
 def get_find_args(cfile, nolinks, cmask, paths=[]):
     args = paths
-    args = args + ["-type", "d", "-o"]
+    args += ["-type", "d", "-o"]
     if nolinks:
-        args = args + ["-type", "l", "-o"]
+        args += ["-type", "l", "-o"]
     if cfile:
         mode = "prune"
         with open(cfile, "r") as f:
@@ -48,17 +48,17 @@ def get_find_args(cfile, nolinks, cmask, paths=[]):
                 elif not line == "" and not line[0] == "#":
                     line = line.split("#")[0].rstrip()
                     if mode == "prune":
-                        args = args + ["-path", line, "-prune", "-o"]
+                        args += ["-path", line, "-prune", "-o"]
                     elif mode == "name":
-                        args = args + ["-name", line, "-o"]
+                        args += ["-name", line, "-o"]
                     elif mode == "wholename":
-                        args = args + ["-wholename", line, "-o"]
+                        args += ["-wholename", line, "-o"]
                     elif mode == "regex":
-                        args = args + ["-regex", line, "-o"]
+                        args += ["-regex", line, "-o"]
     for m in cmask:
-        args = args + ["-path", line, "-prune", "-o"]
+        args += ["-path", line, "-prune", "-o"]
     if len(args) > 0:
-        args = args + ["-print"]
+        args += ["-print"]
     return args
 
 if __name__ == "__main__":
