@@ -40,11 +40,15 @@ OPTIONS
 
 -e *FILE*::
 --exclude *FILE*::
-        Exclude files in directories listed in `FILE` instead of the default.
+        Load exclude rules from FILE instead of the default /etc/elone.conf.
 
 -n::
 --no-exclude::
-        Do not use the default (or any other) exclude file.
+        Ignore exclude rules.
+
+-l::
+--no-links::
+        Exclude symlinks.
 
 -p::
 --protected::

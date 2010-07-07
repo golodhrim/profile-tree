@@ -60,15 +60,15 @@ if __name__ == "__main__":
     parser.add_option(
         "-e", "--exclude",
         action="store", metavar="FILE", dest="file",
-        help="exclude files in directories listed in FILE (default: /etc/elone.conf)")
+        help="load exclude rules from FILE instead of the default /etc/elone.conf")
     parser.add_option(
         "-n", "--no-exclude",
         action="store_false", dest="exclude", default=True,
-        help="do not use the default (or any other) exclude file")
+        help="ignore exclude rules")
     parser.add_option(
         "-l", "--no-links",
         action="store_true", dest="nolinks", default=False,
-        help="do not use the default (or any other) exclude file")
+        help="exclude symlinks")
     parser.add_option(
         "-p", "--protected",
         action="store_true", default=False,
