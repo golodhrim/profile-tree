@@ -8,16 +8,15 @@
 # any later version.
 #
 # Created: 20100429
-# Updated: 20100429
-# Version: 001 (this file)
+# Updated: 20100707
 
-version="001"
+version="002"
 
 usage() {
     cat <<EOF
 Usage: where COMMAND
 
-Write the package COMMAND belongs to to standard ouput
+Write the package COMMAND belongs to to standard output.
 
 Options:
   --version             show version number and exit
