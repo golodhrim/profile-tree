@@ -7,8 +7,7 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
-# Updated: 20100429
-# Version: 004 (this file)
+# Updated: 20100707
 #
 # Commentary:
 #   List files not owned by any package.
@@ -16,7 +15,7 @@
 # TODO check for unnecessary entries in config file
 # TODO convert relative paths to absolute
 
-version="004"
+version="005_pre"
 
 import os.path
 import sys
@@ -42,7 +41,7 @@ def get_find_args(cfile, nolinks, cmask, paths=[]):
                     mode = "prune"
                 elif line == "[mode name]":
                     mode = "name"
-                elif line == "[mode path]":
+                elif line == "[mode wholename]":
                     mode = "wholename"
                 elif line == "[mode regex]":
                     mode = "regex"
