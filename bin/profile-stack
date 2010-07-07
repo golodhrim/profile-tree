@@ -118,7 +118,10 @@ profile=$(eselect profile show | head -n 2 | tail -n 1 | tr -d " ")
 
 if [ -z "$1" ]
 then
-    walk $profile_base/$profile
+    case $profile in
+    /*) walk $profile ;;
+    *)  walk $profile_base/$profile ;;
+    esac
 elif [ -e "$1" ]
 then
     walk $(readlink -f $1)
