@@ -63,7 +63,7 @@ if __name__ == "__main__":
         help="load exclude rules from FILE instead of the default /etc/elone.conf")
     parser.add_option(
         "-n", "--no-exclude",
-        action="store_false", dest="exclude", default=True,
+        action="store_true", dest="noexclude", default=False,
         help="ignore exclude rules")
     parser.add_option(
         "-l", "--no-links",
@@ -84,12 +84,12 @@ if __name__ == "__main__":
         paths = settings.get("CONFIG_PROTECT", "").split()
         cmask = settings.get("CONFIG_PROTECT_MASK", "").split()
 
-    if options.exclude:
-        if not options.file:
-            options.file = "/etc/elone.conf"
-    else:
+    if options.noexclude:
         if options.file:
             parser.error("options -e and -n are mutually exclusive")
+    else:
+        if not options.file:
+            options.file = "/etc/elone.conf"
 
     find_args = get_find_args(options.file, options.nolinks, cmask, paths)
     find = Popen(["find"] + find_args, stdout=PIPE)
