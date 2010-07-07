@@ -28,7 +28,7 @@ from portage.util import ConfigProtect
 from gentoolkit.helpers import FileOwner
 from gentoolkit.package import Package
 
-def get_find_args(cfile, nolinks, cmask, paths=[]):
+def get_find_args(cfile, nolinks, cmask, paths):
     args = paths
     if nolinks:
         args += ["-type", "l", "-o"]
@@ -50,6 +50,18 @@ def get_find_args(cfile, nolinks, cmask, paths=[]):
         args += ["-path", line, "-prune", "-o"]
     args += ["-type", "d", "-o", "-print"]
     return args
+
+def list_unknown_files(cfile, nolinks, cmask, paths):
+    find_args = get_find_args(cfile, nolinks, cmask, paths)
+    find = Popen(["find"] + find_args, stdout=PIPE)
+    sort = Popen(["sort"], stdin=find.stdout, stdout=PIPE)
+    files, stderrdata = sort.communicate()
+    files = files.splitlines()
+
+    findowner = FileOwner(early_out=True)
+    for cfile in files:
+        if not findowner((cfile,)):
+            print cfile
 
 if __name__ == "__main__":
     parser = OptionParser(
@@ -75,7 +87,6 @@ if __name__ == "__main__":
         help="only include config protected files")
 
     options, paths = parser.parse_args()
-    find_args = []
     cmask = []
 
     if options.protected:
@@ -91,14 +102,4 @@ if __name__ == "__main__":
         if not options.file:
             options.file = "/etc/elone.conf"
 
-    find_args = get_find_args(options.file, options.nolinks, cmask, paths)
-    find = Popen(["find"] + find_args, stdout=PIPE)
-    sort = Popen(["sort"], stdin=find.stdout, stdout=PIPE)
-    files, stderrdata = sort.communicate()
-    files = files.splitlines()
-
-    findowner = FileOwner(early_out=True)
-    for cfile in files:
-		# TODO exclude files in vc control directories?
-        if not findowner((cfile,)):
-            print cfile
+    list_unknown_files(options.file, options.nolinks, cmask, paths)
