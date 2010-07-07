@@ -29,8 +29,8 @@ than once are shown with a prefix indicating the problem.
 
 When `-c` is specified the content of the profiles is also listed; again
 excluding `parent` and `deprecated` and all unknown files.  If `REGEXP`
-is provided only matching files are shown.  Don't start `REGEXP` with `^`.
-All profiles are shown without parentheses in this case.
+is provided only matching files are shown. All profiles are shown without
+parentheses in this case.
 
 OPTIONS
 -------

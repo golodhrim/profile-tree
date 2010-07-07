@@ -55,14 +55,15 @@ walk() {
     then
         printf "%${2}s%sDUBLICATE: %s\n" "" "$dpr" "$profile"
     else
-        local content=$(find $1 -maxdepth 2 -type f | grep -E "$1/$regexp" | sort)
-
+        local content=$(cd $1;
+            find . -maxdepth 2 -type f | sort |
+            sed -e "s|^\./||" | grep -E "$regexp")
         if [ -n "$verbose" ]
         then
             printf "%${2}s%s%s\n" "$dpr" "$profile"
             for c in $content
             do
-                printf "%$(expr ${2:-0} + 4)s| %s\n" "" "${c#$1/}"
+                printf "%$(expr ${2:-0} + 4)s| %s\n" "" "$c"
             done
         elif [ -n "$content" ]
         then
