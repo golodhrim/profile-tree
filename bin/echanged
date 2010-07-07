@@ -7,13 +7,12 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090909
-# Updated: 20100429
-# Version: 006 (this file)
+# Updated: 20100707
 #
 # Commentary:
 #   List packages which own modified files.
 
-version="006"
+version="007"
 
 import sys
 import re
@@ -60,6 +59,8 @@ if __name__ == "__main__":
             prune = prune + ["-path", m, "-prune", "-o"]
 
     if paths:
+        sys.stdout.write("Determing file owners (this takes a long time)...\n")
+
         find = Popen(["find"]+paths+prune+["-print"], stdout=PIPE)
         sort = Popen(["sort"], stdin=find.stdout, stdout=PIPE)
         files, stderrdata = sort.communicate()
@@ -77,6 +78,8 @@ if __name__ == "__main__":
     else:
         own_packages = all_packages
     own_packages.sort()
+
+    sys.stdout.write("Determing modified files (this takes a long time)...\n")
 
     for pkg in own_packages:
         pkg_files = pkg.parsed_contents()
