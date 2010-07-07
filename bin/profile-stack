@@ -35,7 +35,16 @@ For more information see profile-stack(1).
 EOF
 }
 
-regexp="(eapi|make.defaults|packages|packages.build|package.keywords|package.mask|package.provided|package.unmask|package.use|package.use.force|package.use.mask|profile.bashrc|use.force|use.mask|virtuals)"
+regexp="^(\
+eapi|\
+make\.defaults|\
+packages(\.build)?|\
+package\.(keywords|mask|provided|unmask|use)(/.*)?|\
+package\.use\.(force|mask)|\
+profile\.bashrc|\
+use\.(force|mask)|\
+virtuals\
+)$"
 
 seen=""
 
