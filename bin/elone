@@ -13,7 +13,6 @@
 #   List files not owned by any package.
 
 # TODO check for unnecessary entries in config file
-# TODO convert relative paths to absolute
 
 version="005_pre"
 
@@ -94,6 +93,10 @@ if __name__ == "__main__":
             parser.error("option -p and argument PATH are mutually exclusive")
         paths = settings.get("CONFIG_PROTECT", "").split()
         cmask = settings.get("CONFIG_PROTECT_MASK", "").split()
+    elif paths:
+        paths = [os.path.abspath(f) for f in paths]
+    else:
+        paths = [os.getcwd()]
 
     if options.noexclude:
         if options.file:
