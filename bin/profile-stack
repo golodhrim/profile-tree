@@ -7,13 +7,12 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090924
-# Updated: 20100121
-# Version: 005 (this file)
+# Updated: 20100707
 #
 # Commentary:
 #   Show stack of parent profiles of a portage profile.
 
-version="005"
+version="006_pre"
 
 usage() {
     cat <<EOF
@@ -98,7 +97,7 @@ do
         ;;
     -c=*)
         verbose="true"
-        regexp=${1#-v=}
+        regexp=${1#-c=}
         ;;
     -c)
         verbose="true"
