@@ -29,7 +29,6 @@ from gentoolkit.package import Package
 
 def get_find_args(cfile, nolinks, cmask, paths=[]):
     args = paths
-    args += ["-type", "d", "-o"]
     if nolinks:
         args += ["-type", "l", "-o"]
     if cfile:
@@ -57,8 +56,7 @@ def get_find_args(cfile, nolinks, cmask, paths=[]):
                         args += ["-regex", line, "-o"]
     for m in cmask:
         args += ["-path", line, "-prune", "-o"]
-    if len(args) > 0:
-        args += ["-print"]
+    args += ["-type", "d", "-o", "-print"]
     return args
 
 if __name__ == "__main__":
