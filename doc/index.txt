@@ -14,6 +14,8 @@ but use them at your own risk.
 Ebuilds are available at
 http://github.com/tarsius/overlay-confsink/tree/master/app-portage/etools/.
 
+Development happens at http://github.com/tarsius/etools/.
+
 Echanged
 --------
 
