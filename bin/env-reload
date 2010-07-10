@@ -8,16 +8,16 @@
 # any later version.
 #
 # Created: 20100428
-# Updated: 20100428
-# Version: 001 (this file)
+# Updated: 20100710
+# Version: 002 (this file)
 
-version="001"
+version="002"
 
 usage() {
     cat <<EOF
 Usage: [.|source] env-reload
 
-Update and reload environment settings automatically
+Update and reload environment settings automatically.
 
 Options:
   --version             show version number and exit
@@ -32,7 +32,7 @@ esac
 
 [ "$EUID" == 0 ] && env-update
 
-if [ ! "$(basename $0)" == "env-reload" ]
+if [ ! "$(basename $0 2> /dev/null)" == "env-reload" ]
 then
     echo ">>> Reloading environment settings..."
 
