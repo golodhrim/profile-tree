@@ -12,7 +12,7 @@ They seam to work fine and I have taken the extra effort to document them,
 but use them at your own risk.
 
 Ebuilds are available at
-http://github.com/tarsius/overlay-confsink/tree/master/app-portage/etools/.
+http://github.com/tarsius/overlay-tarsius/tree/master/app-portage/etools/.
 
 Development happens at http://github.com/tarsius/etools/.
 
