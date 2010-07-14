@@ -1,4 +1,4 @@
-ETOOLS_VERSION ?= 0.2.1
+ETOOLS_VERSION ?= 0.3.2
 
 prefix ?= /usr/local
 bindir ?= $(prefix)/bin
