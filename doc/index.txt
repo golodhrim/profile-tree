@@ -30,12 +30,6 @@ linketl:elone[1] lists files not owned by any package.  Since there likely
 exist many files that are not owned by any package */etc/eclone.conf*
 contains patterns for files known to be listed by elone.
 
-Env-reload
-----------
-
-linketl:env-reload[1] updates and reloads environment settings
-automatically.
-
 Profile-tree
 ------------
 
