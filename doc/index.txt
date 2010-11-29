@@ -36,9 +36,9 @@ Profile-tree
 linketl:profile-tree[1] lists the paths to portage profiles and optionally
 their contents in a tree-like format.
 
-Where
+Whose
 -----
-linketl:where[1] writes the package COMMAND belongs to to standard ouput
+linketl:whose[1] writes the package COMMAND belongs to to standard ouput
 with the help of which(1) and equery(1).
 
 Contact
