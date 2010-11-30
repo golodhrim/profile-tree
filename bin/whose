@@ -8,9 +8,9 @@
 # any later version.
 #
 # Created: 20100429
-# Updated: 20100707
+# Updated: 20101130
 
-version="002"
+version="003"
 
 usage() {
     cat <<EOF
@@ -24,9 +24,12 @@ Options:
 EOF
 }
 
+[ -z "$1" ] && echo "whose: missing COMMAND argument" && exit 1
+
 case $1 in
 -h|--help) usage && exit ;;
 --version) echo "where-$version" && exit ;;
 esac
 
-equery belongs $(which $1) | tail -n-1 | head -n 1
+path=$(which $1) || exit 1
+equery belongs --early-out $path
