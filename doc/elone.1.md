@@ -1,17 +1,16 @@
-elone(1)
-========
+% ELONE(1) Etools User Manual
+% Jonas Bernoulli
+% November 2010
 
-NAME
-----
+# NAME
+
 elone - list files not owned by any package
 
-SYNOPSIS
---------
-[verse]
-'elone' [OPTIONS] [PATH]...
+# SYNOPSIS
 
-DESCRIPTION
------------
+elone [*OPTIONS*] [*PATH*]...
+
+# DESCRIPTION
 
 Elone lists files not owned by any package (installed using portage or a
 compatible package manager).  Since there likely exist many files that are
@@ -28,36 +27,29 @@ excluded.  By providing `PATH` (optionally multiple times) the search is
 limited to the given directories.  Option `--protected` limits the search
 to config protected files.
 
-OPTIONS
--------
+# OPTIONS
 
---version::
-        Show version information and exit.
+\--version
+:   Show version information and exit.
 
--h::
---help::
-        Show help message and exit.
+-h, \--help
+:   Show help message and exit.
 
--e *FILE*::
---exclude *FILE*::
-        Load exclude rules from FILE instead of the default /etc/elone.conf.
+-e *FILE*, \--exclude *FILE*
+:   Load exclude rules from FILE instead of the default /etc/elone.conf.
 
--n::
---no-exclude::
-        Ignore exclude rules.
+-n, \--no-exclude
+:   Ignore exclude rules.
 
--l::
---no-links::
-        Exclude symlinks.
+-l, \--no-links
+:   Exclude symlinks.
 
--p::
---protected::
-        Only include config protected files.
+-p, \--protected
+:   Only include config protected files.
 
-<path>...::
-        Only list files under these directories.
+*PATH*...
+: Only list files under these directories.
 
-SEE ALSO
---------
+# SEE ALSO
 
-linketl:echanged[1]
+`echanged`(1).

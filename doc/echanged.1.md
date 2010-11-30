@@ -1,20 +1,19 @@
-echanged(1)
-===========
+% ECHANGED(1) Etools User Manual
+% Jonas Bernoulli
+% November 2010
 
-NAME
-----
+# NAME
+
 echanged - list packages which own modified files
 
-SYNOPSIS
---------
-[verse]
-'echanged' [OPTIONS] [PATH]...
+# SYNOPSIS
 
-DESCRIPTION
------------
+echanged [*OPTIONS*] [*PATH*]...
+
+# DESCRIPTION
 
 Echanged lists packages (installed using portage or a compatible package
-manager) which own modified files.  This is similar to `equery check <pkgspec>`
+manager) which own modified files.  This is similar to `equery check *PKGSPEC*`
 but more suitable to get a grand overview of the changes to all packages on
 your system.
 
@@ -28,33 +27,26 @@ the package.  Option `--all` on the other hand causes causes all modified
 files of a package to be listed not only those under the provided PATH or
 which are config protected.
 
-OPTIONS
--------
+# OPTIONS
 
---version::
-        Show version information and exit.
+\--version
+:   Show version information and exit.
 
--h::
---help::
-        Show help message and exit.
+-h, \--help
+:   Show help message and exit.
 
--q::
---quiet::
-        Do not list files along with packages.
+-q, \--quiet
+:   Do not list files along with packages.
 
--a::
---all::
-        List all modified files even if not in <path> or not config protected.
+-a, \--all
+:   List all modified files even if not in *PATH* or not config protected.
 
--p::
---protected::
-        Only list packages which own config protected files.
+-p, \--protected
+:   Only list packages which own config protected files.
 
-<path>...::
-        Only list files under these directories.
+*PATH*...
+:   Only list files under these directories.
 
-SEE ALSO
---------
+# SEE ALSO
 
-linketl:elone[1]
-equery(1)
+`elone`(1), `equery`(1).

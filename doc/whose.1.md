@@ -1,23 +1,20 @@
-whose(1)
-========
+% WHOSE(1) Etools User Manual
+% Jonas Bernoulli
+% November 2010
 
-NAME
-----
+# NAME
+
 whose - write the package COMMAND belongs to to standard ouput
 
-SYNOPSIS
---------
-[verse]
-'whose' COMMAND
+# SYNOPSIS
 
-DESCRIPTION
------------
+whose *COMMAND*
+
+# DESCRIPTION
 
 whose writes the package COMMAND belongs to to standard ouput with the
 help of which(1) and equery(1).
 
-SEE ALSO
---------
+# SEE ALSO
 
-which(1)
-equery(1)
+`which`(1), `equery`(1).
