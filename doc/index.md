@@ -1,14 +1,7 @@
 # Etools -- miscellaneous portage utilities
 
-Etools consists of some small miscellaneous portage utilities.  Currently
-these tools are most suitable to get a grand overview of changes you have
-made to your system, which might be specially handy when you want to copy
-over your configurations to another machine or when you make a fresh
-install.
-
-Please note that I have quickly written these scripts to scratch an itch.
-They seam to work fine and I have taken the extra effort to document them,
-but use them at your own risk.
+Etools consists of some small miscellaneous portage utilities that give
+you a grand overview of changes you have made to your system.
 
 Ebuilds are available in my
 [overlay](http://github.com/tarsius/overlay-tarsius/tree/master/app-portage/etools/)
@@ -38,6 +31,6 @@ output with the help of which(1) and equery(1).
 
 ----
 
-Thanks and Best Regards,
+Best Regards,
  
 Jonas Bernoulli <jonas@bernoul.li>
