@@ -3,10 +3,6 @@
 Etools consists of some small miscellaneous portage utilities that give
 you a grand overview of changes you have made to your system.
 
-Ebuilds are available in my
-[overlay](http://github.com/tarsius/overlay-tarsius/tree/master/app-portage/etools/)
-and development happens on [github](http://github.com/tarsius/etools/).
-
 ## Profile-tree
 
 [profile-tree(1)](profile-tree.1.html) lists the paths to portage profiles
@@ -22,7 +18,8 @@ grand overview of the changes to all packages on your system.
 
 [elone(1)](elone.1.html) lists files not owned by any package.  Since
 there likely exist many files that are not owned by any package
-*/etc/eclone.conf* contains patterns for files known to be listed by elone.
+*/etc/eclone.conf* contains patterns for files known to be otherwise
+listed by elone.
 
 ## Whose
 
