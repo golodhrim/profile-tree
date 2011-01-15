@@ -5,8 +5,8 @@ you a grand overview of changes you have made to your system.
 
 ## Profile-tree
 
-[profile-tree(1)](profile-tree.1.html) lists the paths to portage profiles
-and optionally their contents in a tree-like format.
+[profile-tree(1)](profile-tree.1.html) lists portage profiles and optionally
+config files.
 
 ## Echanged
 

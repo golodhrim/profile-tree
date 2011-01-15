@@ -7,12 +7,12 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090924
-# Updated: 20100707
+# Updated: 20110116
 #
 # Commentary:
-#   List portage profiles in a tree-like format.
+#   List portage profiles and optionally config files.
 
-version="006"
+version="007"
 
 usage() {
     cat <<EOF
@@ -26,20 +26,28 @@ Options:
   -c=[regexp]           also list contents of profiles.  If REGEXP
                         is set only show files whose filename
                         relative to the current profile match REGEXP.
-  profile               the profile to be shown (defaults to the
-                        active profile).  Can be an absolute path
-                        or a path relative to the current directory
-                        or relative to PORTDIR/profiles.
+  profile               the profile to be shown (defaults /etc/portage)
 
 For more information see profile-tree(1).
+
+PLEASE NOTE: profile-tree only works with Funtoo's version of portage.
+At the time of writing it even assumes you are using the unreleased beta
+version.  Since portage is currently undergoing heavy refactoring the
+output of profile-tree might stop being in sync with how portage handles
+it's profiles and it's config files.  These are exiting times!
 EOF
 }
+
+set -o nounset
+set -o errexit
+
+profile_base=$(portageq envvar PORTDIR)/profiles
 
 regexp="^(\
 eapi|\
 make\.defaults|\
 packages(\.build)?|\
-package\.(keywords|mask|provided|unmask|use)(/.*)?|\
+package\.((accept_)?keywords|mask|provided|unmask|use)(/.*)?|\
 package\.use\.(force|mask)|\
 profile\.bashrc|\
 use\.(force|mask)|\
@@ -48,9 +56,6 @@ virtuals\
 
 seen=
 verbose=
-
-set -o nounset
-set -o errexit
 
 is_dublicate() {
     for s in $seen
@@ -61,43 +66,55 @@ is_dublicate() {
 }
 
 walk() {
-    local profile=${1#$profile_base/}
+    local profile_path=$1
+    local profile=$(
+        echo $profile_path |
+        sed -e "s|/usr/portage/profiles/|:|" -e "s|/etc/portage/profiles/||")
+    local content=$(
+        cd $profile_path;
+        find . -maxdepth 2 -type f | sort |
+        sed -e "s|^\./||" | grep -E "$regexp")
     local dpr=
 
-    [ -e "$1/deprecated" ] && dpr="DEPRECATED: "
+    [ -e "$1/deprecated" ] && dpr=" DEPRECATED"
 
-    if is_dublicate $1
+    if is_dublicate $profile
     then
-        printf "%${2:-}s%sDUBLICATED: %s\n" "" "$dpr" "$profile"
+        printf "%$2s%s%d DUBLICATE\n" "" $profile $dpr
+    elif [ -n "$verbose" ]
+    then
+        printf "%$2s%s%s\n" "" $profile $dpr
+        for c in $content
+        do
+            printf "%$(expr $2 + 4)s| %s\n" "" "$c"
+        done
+    elif [ -n "$content" ]
+    then
+        printf "%$2s%s%s\n" "" $profile $dpr
     else
-        local content=$(cd $1;
-            find . -maxdepth 2 -type f | sort |
-            sed -e "s|^\./||" | grep -E "$regexp")
-        if [ -n "$verbose" ]
-        then
-            printf "%${2:-}s%s%s\n" "$dpr" "$profile"
-            for c in $content
-            do
-                printf "%$(expr ${2:-0} + 4)s| %s\n" "" "$c"
-            done
-        elif [ -n "$content" ]
-        then
-            printf "%${2:-}s%s%s\n" "" "$dpr" "$profile"
-        else
-            printf "%${2:-}s%s(%s)\n" "" "$dpr" "$profile"
-        fi
+        printf "%$2s(%s)%s\n" "" $profile $dpr
     fi
 
-    seen="$seen $1"
-    local dir=$1
-    local lnk=$1/parent
-    [ -e $lnk ] &&
-    while read par
-    do
-        [[ "${par:0:1}" = "#" || -z "$par" ]] && continue
-        [[ "${par:0:1}" = "/" ]] || par=$(readlink -f $dir/$par)
-        walk $par $(expr ${2:-0} + 2)
-    done < <(tac $lnk) || true
+    seen="$seen $profile"
+
+    if [ -e $profile_path/parent ]
+    then
+        while read parent
+        do
+            if [[ ${parent:0:1} = "#" || -z "$parent" ]]
+            then
+                continue
+            elif [[ ${parent:0:1} = ":" ]]
+            then
+                parent=$profile_base/${parent:1}
+            else
+                parent=$(readlink -f $profile_path/$parent)
+            fi
+
+            walk $parent $(expr $2 + 2)
+
+        done < <(tac $1/parent) || true
+    fi
 }
 
 while (( $# > 0 ))
@@ -129,18 +146,15 @@ do
     shift
 done
 
-profile_base=$(portageq envvar PORTDIR)/profiles
-profile=$(eselect profile show | head -n 2 | tail -n 1 | tr -d " ")
+walk ${profile:-"/etc/portage"} 0
 
-if [ -z "${1:-}" ]
+echo /usr/portage/profiles
+if [ -n "$verbose" ]
 then
-    case $profile in
-    /*) walk $profile ;;
-    *)  walk $profile_base/$profile ;;
-    esac
-elif [ -e "$1" ]
-then
-    walk $(readlink -f $1)
-else
-    walk $profile_base/$1
+    for f in /usr/portage/profiles/*
+    do
+        [ -f $f ] && echo "    | $(basename $f)"
+    done
+
+    echo /usr/share/portage/config/make.globals
 fi
