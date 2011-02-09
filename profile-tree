@@ -7,26 +7,27 @@
 #
 # Author:  Jonas Bernoulli <jonas@bernoul.li>
 # Created: 20090924
-# Updated: 20110116
+# Updated: 20110209
 #
 # Commentary:
 #   List portage profiles and optionally config files.
 
-version="007"
+version="0.1.0"
 
 usage() {
     cat <<EOF
 Usage: profile-tree [-c[=REGEXP]] [PROFILE]
 
-List portage profiles in a tree-like format.
+List portage profiles and other portage config files.
 
 Options:
-  --version             show program's version number and exit
+  --version             show version information and exit
   -h, --help            show this help message and exit
-  -c=[regexp]           also list contents of profiles.  If REGEXP
-                        is set only show files whose filename
-                        relative to the current profile match REGEXP.
-  profile               the profile to be shown (defaults /etc/portage)
+  -c[=REGEXP]           show config files within and outside of
+                        profiles.  If REGEXP show matching files
+                        instead.
+  PROFILE               the profile to be shown along with the profiles
+                        it inherits from (defaults to /etc/portage)
 
 For more information see profile-tree(1).
 
@@ -41,21 +42,11 @@ EOF
 set -o nounset
 set -o errexit
 
-profile_base=$(portageq envvar PORTDIR)/profiles
-
-regexp="^(\
-eapi|\
-make\.defaults|\
-packages(\.build)?|\
-package\.((accept_)?keywords|mask|provided|unmask|use)(/.*)?|\
-package\.use\.(force|mask)|\
-profile\.bashrc|\
-use\.(force|mask)|\
-virtuals\
-)$"
+source /etc/profile-tree.conf
 
 seen=
 verbose=
+regexp=
 
 is_dublicate() {
     for s in $seen
@@ -67,32 +58,42 @@ is_dublicate() {
 
 walk() {
     local profile_path=$1
-    local profile=$(
-        echo $profile_path |
-        sed -e "s|/usr/portage/profiles/|:|" -e "s|/etc/portage/profiles/||")
-    local content=$(
-        cd $profile_path;
-        find . -maxdepth 2 -type f | sort |
-        sed -e "s|^\./||" | grep -E "$regexp")
-    local dpr=
 
+    local profile=
+    local profile_regexp=
+    case $profile_path in
+    $profile_user*)
+        profile=$(echo $profile_path | sed -e "s|$profile_user/||")
+        profile_regexp=$profile_user_regexp
+        ;;
+    *)
+        profile=$(echo $profile_path | sed -e "s|$profile_base/|:|")
+        profile_regexp=$profile_dist_regexp
+    esac
+    [ -n "$regexp" ] && profile_regexp=$regexp
+
+    local content=$(
+        find $profile_path -follow -type f | sort |
+        sed -e "s:^$profile_path/::" | grep -E "^$profile_regexp$")
+
+    local dpr=
     [ -e "$1/deprecated" ] && dpr=" DEPRECATED"
 
     if is_dublicate $profile
     then
-        printf "%$2s%s%d DUBLICATE\n" "" $profile $dpr
+        printf "%$2s%s/%d DUBLICATE\n" "" $profile $dpr
     elif [ -n "$verbose" ]
     then
-        printf "%$2s%s%s\n" "" $profile $dpr
+        printf "%$2s%s/%s\n" "" $profile $dpr
         for c in $content
         do
             printf "%$(expr $2 + 4)s| %s\n" "" "$c"
         done
     elif [ -n "$content" ]
     then
-        printf "%$2s%s%s\n" "" $profile $dpr
+        printf "%$2s%s/%s\n" "" $profile $dpr
     else
-        printf "%$2s(%s)%s\n" "" $profile $dpr
+        printf "%$2s(%s/)%s\n" "" $profile $dpr
     fi
 
     seen="$seen $profile"
@@ -146,15 +147,25 @@ do
     shift
 done
 
-walk ${profile:-"/etc/portage"} 0
+walk ${profile:-$profile_user} 0
 
-echo /usr/portage/profiles
+echo $profile_base/
 if [ -n "$verbose" ]
 then
-    for f in /usr/portage/profiles/*
-    do
-        [ -f $f ] && echo "    | $(basename $f)"
-    done
+    find $profile_base -follow -type f | sort |
+    sed -e "s:^$profile_base/::" |
+    grep -E "^${regexp:-$profile_base_regexp}$" |
 
-    echo /usr/share/portage/config/make.globals
+    [ -e $portage_globals ] &&
+    echo "make.globals" | grep -q -E "^${regexp:-make.globals}$" &&
+    echo $portage_globals
+fi
+
+echo $portage_varlib/
+if [ -n "$verbose" ]
+then
+    find $portage_varlib -type f | sort |
+    sed -e "s:^$portage_varlib/::" |
+    grep -E "${regexp:-$portage_libvar_regexp}$" |
+    sed -e "s:^:    | :" || true
 fi
